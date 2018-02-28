@@ -146,7 +146,80 @@ var Game = function (_React$Component) {
       }
       return -1;
     } // findAvailableRow
+    // below really lacks psuedo codes...
 
+  }, {
+    key: "checkDiagonal",
+    value: function checkDiagonal(row, col) {
+      //find right and left tops
+      var c = this.state.cells;
+      var val = this.state.player ? 2 : 1;
+      var rR = row;
+      var cR = col;
+      while (rR < 5 && cR < 6) {
+        rR++;
+        cR++;
+      }
+
+      while (rR >= 3 && cR >= 3) {
+        if (c[rR][cR] == val && c[rR - 1][cR - 1] == val && c[rR - 2][cR - 2] == val && c[rR - 3][cR - 3] == val) {
+          return 1;
+        }
+        rR--;
+        cR--;
+      }
+
+      var rL = row;
+      var cL = col;
+
+      while (rL < 5 && cL > 0) {
+        rL++;
+        cL--;
+      }
+
+      while (rL >= 3 && cL <= 3) {
+        if (c[rL][cL] == val && c[rL - 1][cL + 1] == val && c[rL - 2][cL + 2] == val && c[rL - 3][cL + 3] == val) {
+          return 1;
+        }
+        rL--;
+        cL++;
+      }
+      return 0;
+    }
+  }, {
+    key: "checkHorizontal",
+    value: function checkHorizontal(row, col) {
+      var c = this.state.cells;
+      var i = 6;
+      var val = this.state.player ? 2 : 1;
+
+      while (i >= 3) {
+        if (c[row][i] == val && c[row][i - 1] == val && c[row][i - 2] == val && c[row][i - 3] == val) {
+          return 1;
+        }
+        i--;
+      }
+      return 0;
+    }
+  }, {
+    key: "checkVertical",
+    value: function checkVertical(row, col) {
+      var c = this.state.cells;
+      var i = row;
+      var val = this.state.player ? 2 : 1;
+
+      if (i >= 3) {
+        if (c[i][col] == val && c[i - 1][col] == val && c[i - 2][col] == val && c[i - 3][col] == val) {
+          return 1;
+        }
+      }
+      return 0;
+    }
+  }, {
+    key: "checkVictory",
+    value: function checkVictory(row, col) {
+      return this.checkVertical(row, col) || this.checkHorizontal(row, col) || this.checkDiagonal(row, col);
+    }
 
     //  handleClick method
     // (add row),col, to get details
@@ -155,6 +228,9 @@ var Game = function (_React$Component) {
   }, {
     key: "handleClick",
     value: function handleClick(row, col) {
+      var _this2 = this;
+
+      if (this.state.winner) return;
       console.log('row:' + row + "| col:" + col);
       console.log(this.state.cells);
       //shallow copy of 2D array
@@ -170,7 +246,13 @@ var Game = function (_React$Component) {
       // set value based on player this.state.player?1:2
       //temp[row][col]=this.state.player?1:2
       // add alternate player functionality::player:!this.state.player
-      this.setState({ cells: temp, player: !this.state.player });
+      // call back for winner
+      this.setState({ cells: temp, player: !this.state.player }, function () {
+        if (_this2.checkVictory(newRow, col) > 0) {
+          console.log("win");
+          _this2.setState({ winner: _this2.state.player ? 2 : 1 });
+        }
+      });
       console.log(temp);
     } //handleClick
 
