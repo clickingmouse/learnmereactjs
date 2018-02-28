@@ -16,8 +16,16 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 
 // step 1  create the circle/ game piece to be used
 function Circle(props) {
+  //change color based on state
+  var color = "white";
+  if (props.cell == 1) {
+    color = "black";
+  } else if (props.cell == 2) {
+    color = "red";
+  }
+
   var style = {
-    backgroundColor: "white",
+    backgroundColor: color,
     border: "1px solid black",
     borderRadius: "100%",
     paddingTop: "98%"
@@ -37,12 +45,16 @@ function Cell(props) {
     border: "1px solid black",
     backgroundColor: "yellow"
   };
-  return React.createElement(
-    "div",
-    { style: style, onClick: function onClick() {
-        return props.handleClick(props.row, props.col);
-      } },
-    React.createElement(Circle, { cell: props.cell })
+  return (
+    //<div style = {style}>
+    //      <Circle/>
+    React.createElement(
+      "div",
+      { style: style, onClick: function onClick() {
+          return props.handleClick(props.row, props.col);
+        } },
+      React.createElement(Circle, { cell: props.cell })
+    )
   );
 }
 /*
@@ -58,6 +70,8 @@ function Row(props) {
   };
   var cells = [];
   for (var i = 0; i < 7; i++) {
+
+    //cells.push(<Cell/>)
     cells.push(React.createElement(Cell, { key: i, cell: props.cells[i], row: props.row, col: i, handleClick: props.handleClick }));
   }
 
@@ -78,7 +92,6 @@ function Board(props) {
   for (var i = 5; i >= 0; i--) {
     // pass state to row; also clickhandler
     //rows.push(<Row/>)
-
     rows.push(React.createElement(Row, { key: i, row: i, cells: props.cells[i], handleClick: props.handleClick }));
   }
   return React.createElement(
@@ -114,18 +127,31 @@ var Game = function (_React$Component) {
     } // for loop
     // initial state of constructor
     _this.state = { player: false, cells: cells, winner: 0 };
+    _this.handleClick = _this.handleClick.bind(_this);
     return _this;
   } // end constructor(props)
 
   //  handleClick method
+  // (add row),col, to get details
 
 
   _createClass(Game, [{
     key: "handleClick",
-    value: function handleClick() {
-      console.log('clicked');
-      this.handleClick = this.handleClick.bind(this);
-    }
+    value: function handleClick(row, col) {
+      console.log('row:' + row + "| col:" + col);
+      console.log(this.state.cells);
+      //shallow copy of 2D array
+      var temp = [];
+      for (var i = 0; i < 6; i++) {
+        temp.push(this.state.cells[i].slice());
+        //console.log(temp)
+      } // for
+      temp[row][col] = 1;
+      this.setState({ cells: temp });
+      console.log(temp);
+    } //handleClick
+
+
   }, {
     key: "render",
     value: function render() {
@@ -137,7 +163,7 @@ var Game = function (_React$Component) {
           null,
           " Blacks Turn"
         ),
-        React.createElement(Board, { cells: this.state.cell, handleClick: this.handleClick }),
+        React.createElement(Board, { cells: this.state.cells, handleClick: this.handleClick }),
         React.createElement(
           "button",
           null,

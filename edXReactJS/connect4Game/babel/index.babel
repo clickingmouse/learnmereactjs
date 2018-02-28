@@ -8,8 +8,17 @@
 
 // step 1  create the circle/ game piece to be used
 function Circle(props) {
+  //change color based on state
+  var color="white"
+  if(props.cell==1){
+    color="black"
+  } 
+  else if (props.cell==2){
+    color="red"
+  }
+  
   var style = {
-    backgroundColor: "white",
+    backgroundColor: color,
     border: "1px solid black",
     borderRadius: "100%",
     paddingTop: "98%"
@@ -30,6 +39,8 @@ function Cell(props) {
     backgroundColor: "yellow"
   };
   return (
+    //<div style = {style}>
+      //      <Circle/>
     <div style={style} onClick={()=>props.handleClick(props.row, props.col)}>
       <Circle cell={props.cell}/>
     </div>
@@ -48,6 +59,8 @@ function Row(props) {
   };
   var cells = [];
   for (let i = 0; i < 7; i++) {
+    
+    //cells.push(<Cell/>)
     cells.push(<Cell key={i} cell={props.cells[i]} row={props.row} col={i} handleClick={props.handleClick}/>);
   }
 
@@ -64,8 +77,8 @@ function Board(props) {
   for (let i = 5; i >= 0; i--) {
     // pass state to row; also clickhandler
     //rows.push(<Row/>)
+     rows.push(<Row key = {i} row = {i} cells = {props.cells[i]} handleClick = {props.handleClick}/>)
     
-    rows.push(<Row key={i} row={i} cells ={props.cells[i]}  handleClick={props.handleClick}/>);
   }
   return <div>{rows}</div>;
 }
@@ -92,19 +105,31 @@ class Game extends React.Component {
     } // for loop
 // initial state of constructor
     this.state = { player: false, cells: cells, winner: 0 };
+    this.handleClick=this.handleClick.bind(this)
   } // end constructor(props)
   
   //  handleClick method
-  handleClick(){
-    console.log('clicked')
-    this.handleClick=this.handleClick.bind(this)
-  }
+  // (add row),col, to get details
+  handleClick(row,col){
+    console.log('row:'+row +"| col:" +col)
+    console.log(this.state.cells)
+    //shallow copy of 2D array
+    var temp=[];
+    for(let i=0;i<6;i++){
+      temp.push(this.state.cells[i].slice())
+      //console.log(temp)
+    }// for
+   temp[row][col]=1;
+    this.setState({cells:temp});
+    console.log(temp);
+    }//handleClick
+  
   
   render() {
     return (
       <div>
         <h1> Blacks Turn</h1>
-        <Board cells={this.state.cell} handleClick={this.handleClick} />
+        <Board cells={this.state.cells} handleClick={this.handleClick} />
         <button>Restart</button>
       </div>
     );
