@@ -131,12 +131,28 @@ var Game = function (_React$Component) {
     return _this;
   } // end constructor(props)
 
-  //  handleClick method
-  // (add row),col, to get details
-  // step 5, addd alternate player functionality
+  // find availableRow method
+  // to see the piece drop down to bottom
+  // start bottom row of colum and return indx of empty cell
 
 
   _createClass(Game, [{
+    key: "findAvailableRow",
+    value: function findAvailableRow(col) {
+      for (var i = 0; i < 6; i++) {
+        if (this.state.cells[i][col] == 0) {
+          return i;
+        }
+      }
+      return -1;
+    } // findAvailableRow
+
+
+    //  handleClick method
+    // (add row),col, to get details
+    // step 5, addd alternate player functionality
+
+  }, {
     key: "handleClick",
     value: function handleClick(row, col) {
       console.log('row:' + row + "| col:" + col);
@@ -147,9 +163,12 @@ var Game = function (_React$Component) {
         temp.push(this.state.cells[i].slice());
         //console.log(temp)
       } // for
+      //updatae temp state base on row
+      var newRow = this.findAvailableRow(col);
+      temp[newRow][col] = this.state.player ? 1 : 2;
 
       // set value based on player this.state.player?1:2
-      temp[row][col] = this.state.player ? 1 : 2;
+      //temp[row][col]=this.state.player?1:2
       // add alternate player functionality::player:!this.state.player
       this.setState({ cells: temp, player: !this.state.player });
       console.log(temp);
