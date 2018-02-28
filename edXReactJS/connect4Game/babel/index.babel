@@ -1,42 +1,39 @@
-
 //sections
 // - circle (game piece)
-//- cell 
+//- cell
 // row of cells
 // gameboard
 //game message
 // restart button
 
 // step 1  create the circle/ game piece to be used
-function Circle(props){
-  var style ={
-    backgroundColor:"white",
-    border:"1px solid black",
-    borderRadius:"100%",
-    paddingTop:"98%"
-    
-  }
-  return (<div style = {style}></div>
-)
-    }
+function Circle(props) {
+  var style = {
+    backgroundColor: "white",
+    border: "1px solid black",
+    borderRadius: "100%",
+    paddingTop: "98%"
+  };
+  return <div style={style} />;
+}
 /*
 ReactDOM.render(
 <Circle/>, document.getElementById('root')
 
 )
 */
-function Cell(props){
-  var style ={
-    height :50,
-    width:50,
-    border:"1px solid black",
-    backgroundColor:"yellow"
-    
-  }
-  return ( <div style={style}>
-      <Circle/></div>
-  )
-  
+function Cell(props) {
+  var style = {
+    height: 50,
+    width: 50,
+    border: "1px solid black",
+    backgroundColor: "yellow"
+  };
+  return (
+    <div style={style} onClick={()=>props.handleClick(props.row, props.col)}>
+      <Circle cell={props.cell}/>
+    </div>
+  );
 }
 /*
 ReactDOM.render(
@@ -45,20 +42,16 @@ ReactDOM.render(
 */
 
 //Step3 create compoent to represenet row of cells
-function Row(props){
-  var style ={
+function Row(props) {
+  var style = {
     display: "flex"
+  };
+  var cells = [];
+  for (let i = 0; i < 7; i++) {
+    cells.push(<Cell key={i} cell={props.cells[i]} row={props.row} col={i} handleClick={props.handleClick}/>);
   }
-  var cells =[]
-  for (let i =0;i <7;i++){
-    cells.push(<Cell/>)
-  }
-  
-  return (
-  <div style ={style}>
-      {cells}
-      </div>
-  ) 
+
+  return <div style={style}>{cells}</div>;
 }
 /*
 ReactDOM.render(
@@ -66,16 +59,56 @@ ReactDOM.render(
 )*/
 
 //step 4 Create gameboard
-function Board(props){
-  var rows=[]
-  for(let i =5; i >=0; i--){
-    rows.push(<Row/>)
-    }
-return (
-<div>
-  {rows}
-  </div>
-)
+function Board(props) {
+  var rows = [];
+  for (let i = 5; i >= 0; i--) {
+    // pass state to row; also clickhandler
+    //rows.push(<Row/>)
+    
+    rows.push(<Row key={i} row={i} cells ={props.cells[i]}  handleClick={props.handleClick}/>);
+  }
+  return <div>{rows}</div>;
 }
-
+/*
 ReactDOM.render(<Board/>, document.getElementById('root'))
+*/
+
+//Create Game "component" to encompass everything
+///////////////////////////////////////////////////
+//Game State - keep track of everything
+//- which player's turn, boolean black/red
+//- cell's piece state: empty, black, red
+// - which player won: none, black, red
+// empty grid w/ 2D array ...??
+
+class Game extends React.Component {
+  constructor(props) {
+    super(props);
+
+    //initiall state settings with 2D array
+    var cells = [];
+    for (let i = 0; i < 6; i++) {
+      cells.push(new Array(7).fill(0));
+    } // for loop
+// initial state of constructor
+    this.state = { player: false, cells: cells, winner: 0 };
+  } // end constructor(props)
+  
+  //  handleClick method
+  handleClick(){
+    console.log('clicked')
+    this.handleClick=this.handleClick.bind(this)
+  }
+  
+  render() {
+    return (
+      <div>
+        <h1> Blacks Turn</h1>
+        <Board cells={this.state.cell} handleClick={this.handleClick} />
+        <button>Restart</button>
+      </div>
+    );
+  }
+} // class
+
+ReactDOM.render(<Game />, document.getElementById("root"));
