@@ -219,11 +219,19 @@ class Game extends React.Component {
         this.setState({winner:this.state.player?2:1})
       }
     });
-    console.log(temp);
-
-    
+    console.log(temp);    
     
     }//handleClick
+  
+  //restart method
+  restart(){
+    var cells=[];
+    for(let i=0; i<6;i++){
+      cells.push(new Array(7).fill(0));
+    }
+    this.setState({player:false, cells:cells, winner:0})
+  }
+  
   
   
   render() {
@@ -231,7 +239,7 @@ class Game extends React.Component {
       <div>
         <h1> {this.state.player?"Black Turn": "Red Turn"}</h1>
         <Board cells={this.state.cells} handleClick={this.handleClick} />
-        <button>Restart</button>
+        <button onClick={()=>this.restart()}>Restart</button>
       </div>
     );
   }

@@ -256,10 +256,22 @@ var Game = function (_React$Component) {
       console.log(temp);
     } //handleClick
 
+    //restart method
 
+  }, {
+    key: "restart",
+    value: function restart() {
+      var cells = [];
+      for (var i = 0; i < 6; i++) {
+        cells.push(new Array(7).fill(0));
+      }
+      this.setState({ player: false, cells: cells, winner: 0 });
+    }
   }, {
     key: "render",
     value: function render() {
+      var _this3 = this;
+
       return React.createElement(
         "div",
         null,
@@ -272,7 +284,9 @@ var Game = function (_React$Component) {
         React.createElement(Board, { cells: this.state.cells, handleClick: this.handleClick }),
         React.createElement(
           "button",
-          null,
+          { onClick: function onClick() {
+              return _this3.restart();
+            } },
           "Restart"
         )
       );
