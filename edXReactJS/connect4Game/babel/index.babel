@@ -110,6 +110,7 @@ class Game extends React.Component {
   
   //  handleClick method
   // (add row),col, to get details
+  // step 5, addd alternate player functionality
   handleClick(row,col){
     console.log('row:'+row +"| col:" +col)
     console.log(this.state.cells)
@@ -119,8 +120,11 @@ class Game extends React.Component {
       temp.push(this.state.cells[i].slice())
       //console.log(temp)
     }// for
-   temp[row][col]=1;
-    this.setState({cells:temp});
+    
+    // set value based on player this.state.player?1:2
+   temp[row][col]=this.state.player?1:2
+    // add alternate player functionality::player:!this.state.player
+    this.setState({cells:temp, player:!this.state.player});
     console.log(temp);
     }//handleClick
   
@@ -128,7 +132,7 @@ class Game extends React.Component {
   render() {
     return (
       <div>
-        <h1> Blacks Turn</h1>
+        <h1> {this.state.player?"Black Turn": "Red Turn"}</h1>
         <Board cells={this.state.cells} handleClick={this.handleClick} />
         <button>Restart</button>
       </div>

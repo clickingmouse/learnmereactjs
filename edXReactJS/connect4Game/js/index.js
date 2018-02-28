@@ -133,6 +133,7 @@ var Game = function (_React$Component) {
 
   //  handleClick method
   // (add row),col, to get details
+  // step 5, addd alternate player functionality
 
 
   _createClass(Game, [{
@@ -146,8 +147,11 @@ var Game = function (_React$Component) {
         temp.push(this.state.cells[i].slice());
         //console.log(temp)
       } // for
-      temp[row][col] = 1;
-      this.setState({ cells: temp });
+
+      // set value based on player this.state.player?1:2
+      temp[row][col] = this.state.player ? 1 : 2;
+      // add alternate player functionality::player:!this.state.player
+      this.setState({ cells: temp, player: !this.state.player });
       console.log(temp);
     } //handleClick
 
@@ -161,7 +165,8 @@ var Game = function (_React$Component) {
         React.createElement(
           "h1",
           null,
-          " Blacks Turn"
+          " ",
+          this.state.player ? "Black Turn" : "Red Turn"
         ),
         React.createElement(Board, { cells: this.state.cells, handleClick: this.handleClick }),
         React.createElement(
